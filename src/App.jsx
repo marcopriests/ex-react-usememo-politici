@@ -19,7 +19,7 @@ function App() {
   const [search, setSearch] = useState('');
 
   const filteredPoliticians = useMemo(() => {
-    return politicians.filter(p => p.name.toLowerCase().includes(search.toLowerCase()))
+    return politicians.filter(p => p.name.toLowerCase().includes(search.toLowerCase()) || p.biography.toLowerCase().includes(search.toLowerCase()))
   }, [search])
 
   function getData() {
