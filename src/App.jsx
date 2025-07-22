@@ -1,7 +1,12 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 
 function App() {
   const [politicians, setPoliticians] = useState([]);
+  const [search, setSearch] = useState('');
+
+  const filteredPoliticians = useMemo(() => {
+    return politicians.filter(p => p.name.toLowerCase().includes(search.toLowerCase()))
+  }, [search])
 
   function getData() {
     fetch(`http://localhost:3333/politicians`)
@@ -17,8 +22,11 @@ function App() {
   return (
     <>
       <h1>Lista politici</h1>
+
       <div className="card-container">
-        {politicians.map((p, i) => {
+        <input type="text" className="searchbar" placeholder="Cerca politico..." value={search} onChange={e => setSearch(e.target.value)} />
+
+        {filteredPoliticians.map((p, i) => {
           return (
             <div className="card" key={i}>
               <div className="card-info">
