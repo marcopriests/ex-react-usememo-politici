@@ -17,21 +17,24 @@ const PoliticianCard = React.memo(({ name, position, bio }) => {
 function App() {
   const [politicians, setPoliticians] = useState([]);
   const [search, setSearch] = useState('');
+  const [selectValue, setSelectValue] = useState('');
 
-  const filteredPoliticians = useMemo(() => {
-    return politicians.filter(p => p.name.toLowerCase().includes(search.toLowerCase()) || p.biography.toLowerCase().includes(search.toLowerCase()))
-  }, [search])
-
-  function getData() {
+  useEffect(() => {
     fetch(`http://localhost:3333/politicians`)
       .then(res => res.json())
       .then(data => setPoliticians(data))
-      .catch(err => console.error(err))
-  };
+      .catch(err => console.error(err));
+  }, []);
 
-  useEffect(() => {
-    getData();
-  }, [])
+  const filteredPoliticians = useMemo(() => {
+    const filterByPosition = selectValue !== '' ? politicians.filter(p => p.position === selectValue) : politicians;
+    const filtered = filterByPosition.filter(p => p.name.toLowerCase().includes(search) || p.biography.toLowerCase().includes(search))
+    return filtered;
+  }, [search, selectValue])
+
+  const positions = useMemo(() => {
+    return [...new Set(politicians.map(p => p.position))];
+  }, [politicians]);
 
   return (
     <>
@@ -39,6 +42,12 @@ function App() {
 
       <div className="card-container">
         <input type="text" className="searchbar" placeholder="Cerca politico..." value={search} onChange={e => setSearch(e.target.value)} />
+        <select name="position" className="select" value={selectValue} onChange={e => setSelectValue(e.target.value)}>
+          <option value={''} default>Select position</option>
+          {positions.map((p, i) => {
+            return <option value={p} key={i}>{p}</option>;
+          })}
+        </select>
 
         {filteredPoliticians.map((p, i) => {
           return <PoliticianCard name={p.name} position={p.position} bio={p.biography} key={i} />

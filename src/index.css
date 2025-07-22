@@ -14,3 +14,11 @@
     width: 300px;
     margin-bottom: 20px;
 }
+
+.select {
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid;
+    width: 300px;
+    margin-left: 20px;
+}
